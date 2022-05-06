@@ -1,38 +1,52 @@
-# publish.py
-import pika
+from pika import BlockingConnection, ConnectionParameters
+from pika.exceptions import ConnectionWrongStateError, ConnectionClosedByBroker, AMQPConnectionError
 import json
-import uuid
+from faker import Faker
+from os import sys
+from constants import settings
 
+def define_exchange(name, extype):
+    try:
+        return channel.exchange_declare(
+            exchange=name,
+            exchange_type=extype
+        )
+    except ConnectionClosedByBroker:
+        sys.exit('make sure you have a proper configuration')
 
-connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
-channel = connection.channel()
+def main():
+    exchange = define_exchange('order', 'direct') 
+    print(exchange)
 
-channel.exchange_declare(
-    exchange='order',
-    exchange_type='direct'
-)
+    fake = Faker()
 
-order = {
-    'id': str(uuid.uuid4()),
-    'user_email': 'john.doe@example.com',
-    'product': 'Leather Jacket',
-    'quantity': 1
-}
+    for _ in range(10):
 
-channel.basic_publish(
-    exchange='order',
-    routing_key='order.notify',
-    body=json.dumps({'user_email': order['user_email']})
-)
+        order = {
+            'id': fake.ean(length=13),
+            'name': fake.name()
+        }
+        
+        channel.basic_publish(
+            exchange='order',
+            routing_key='order.notify',
+            body=json.dumps({'order': order})
+        )
 
-print(' [x] Sent notify message')
+        print(' [x] Sent notify message')
 
-channel.basic_publish(
-    exchange='order',
-    routing_key='order.report',
-    body=json.dumps(order)
-)
+if __name__ == '__main__':
 
-print(' [x] Sent report message')
+    try:
+        connection = BlockingConnection(
+            ConnectionParameters(
+                'localhost',
+                5672,
+            )
+        )
+    except AMQPConnectionError:
+        sys.exit('make sure your rabbitmq is running.')
 
-connection.close()
+    channel = connection.channel()
+    main()
+    connection.close()
