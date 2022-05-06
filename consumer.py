@@ -15,11 +15,14 @@ channel.queue_bind(
     routing_key='order.notify'  # binding key
 )
 
+a = 0
 
 def callback(ch, method, properties, body):
+    global a
     payload = json.loads(body)
-    print(' [x] Notifying {}'.format(payload['user_email']))
-    print(' [x] Done')
+    a += 1
+    print(' [x] Notifying {}'.format(payload))
+    print(f' [x] Done no. {a}')
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 channel.basic_consume(queue_name, callback)
