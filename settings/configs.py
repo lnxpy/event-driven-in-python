@@ -14,9 +14,16 @@ EXCHANGE = {
 # message pattern
 MESSAGE = {
     'amount': 5,
+    'delay': 3,
     'context': [
+        'id',
         'first_name',
         'last_name',
         'email',
     ],
+}
+
+RABBITMQ = {
+    'host': 'localhost',
+    'port': 5672
 }
