@@ -6,7 +6,8 @@ from pika import BlockingConnection, ConnectionParameters
 from pika.exceptions import ConnectionClosedByBroker, AMQPConnectionError
 
 from settings.constants import volumes
-from settings.configs import EXCHANGE, MESSAGE
+from settings.configs import EXCHANGE, MESSAGE, RABBITMQ
+from settings.patterns import SENDING_MESSAGE, ERROR_MESSAGE
 
 
 def define_exchange(exchange_name, exchange_type):
@@ -16,7 +17,7 @@ def define_exchange(exchange_name, exchange_type):
             exchange_type=exchange_type
         )
     except ConnectionClosedByBroker:
-        sys.exit('make sure you have a valid configuration')
+        sys.exit(ERROR_MESSAGE.format('Make sure you have a valid configuration.'))
 
 def main():
     exchange = define_exchange(
@@ -35,21 +36,25 @@ def main():
             body=json.dumps(body)
         )
 
-        print(' [x] Sent notify message')
+        print(SENDING_MESSAGE.format(list(body.values())[0]))
+        print(json.dumps(body, indent=2), '\n\r')
+    
+        # TODO: using Pydantic for serialization
+
+        try:
+            sleep(MESSAGE['delay'])
+        except KeyError:
+            pass
 
 
 if __name__ == '__main__':
 
     try:
-        # TODO: reading from configs
         connection = BlockingConnection(
-            ConnectionParameters(
-                'localhost',
-                5672,
-            )
+            ConnectionParameters(**RABBITMQ)
         )
     except AMQPConnectionError:
-        sys.exit('make sure your rabbitmq is running.')
+        sys.exit(ERROR_MESSAGE.format('Make sure the rabbitmq node is running.'))
 
     channel = connection.channel()
     main()
