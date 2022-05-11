@@ -19,6 +19,12 @@ a = 0
 
 def callback(ch, method, properties, body):
     global a
+    print()
+    print()
+    print(body)
+    print()
+    print()
+
     payload = json.loads(body)
     a += 1
     print(' [x] Notifying {}'.format(payload))
