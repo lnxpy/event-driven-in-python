@@ -1,11 +1,12 @@
-from pika import BlockingConnection, ConnectionParameters
-from pika.exceptions import ConnectionWrongStateError, ConnectionClosedByBroker, AMQPConnectionError
 import json
 from os import sys
+from time import sleep
+
+from pika import BlockingConnection, ConnectionParameters
+from pika.exceptions import ConnectionClosedByBroker, AMQPConnectionError
+
 from settings.constants import volumes
 from settings.configs import EXCHANGE, MESSAGE
-
-from time import sleep
 
 
 def define_exchange(exchange_name, exchange_type):
