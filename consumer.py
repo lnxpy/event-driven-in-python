@@ -1,38 +1,53 @@
-# notify.py
-import pika
+from os import sys
 import json
 
+from pika import BlockingConnection, ConnectionParameters
+from pika.exceptions import ConnectionClosedByBroker, AMQPConnectionError
 
-connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
-channel = connection.channel()
+from settings.configs import EXCHANGE, RABBITMQ
+from settings.patterns import RECEIVED_MESSAGE, START_CONSUMING, QUEUE_BIND, INPUT
 
-queue = channel.queue_declare('order_notify')
-queue_name = queue.method.queue
 
-channel.queue_bind(
-    exchange='order',
-    queue=queue_name,
-    routing_key='order.notify'  # binding key
-)
-
-a = 0
 
 def callback(ch, method, properties, body):
-    global a
-    print()
-    print()
-    print(body)
-    print()
-    print()
 
     payload = json.loads(body)
-    a += 1
-    print(' [x] Notifying {}'.format(payload))
-    print(f' [x] Done no. {a}')
+    print(RECEIVED_MESSAGE.format(payload))
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
-channel.basic_consume(queue_name, callback)
+def main():
+    queue = channel.queue_declare('order_notify')
+    queue_name = queue.method.queue
 
-print(' [*] Waiting for notify messages. To exit press CTRL+C')
+    print(START_CONSUMING % RABBITMQ)
+    print(QUEUE_BIND % EXCHANGE)
 
-channel.start_consuming()
+    # TODO: reading from configs
+
+    channel.queue_bind(
+        exchange='order',
+        queue=queue_name,
+        routing_key='order.notify'  # binding key
+    )
+    
+    channel.basic_consume(queue_name, callback)
+
+    print(INPUT.format('Listening to queue for messages.. (press CTRL+C to exit)'))
+
+    channel.start_consuming()
+
+
+
+if __name__ == '__main__':
+    try:
+        connection = BlockingConnection(
+            ConnectionParameters(**RABBITMQ)
+        )
+    except AMQPConnectionError:
+        sys.exit(ERROR_MESSAGE.format('Make sure the rabbitmq node is running.'))
+
+    channel = connection.channel()
+    
+    main()
+
+    connection.close()
