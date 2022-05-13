@@ -13,8 +13,8 @@ EXCHANGE = {
 
 # message pattern
 MESSAGE = {
-    'amount': 5,
-    'delay': 3,
+    'amount': 20,
+    'delay': 1,
     'context': [
         'id',
         'first_name',
@@ -23,6 +23,7 @@ MESSAGE = {
     ],
 }
 
+# rabbitmq node
 RABBITMQ = {
     'host': 'localhost',
     'port': 5672
