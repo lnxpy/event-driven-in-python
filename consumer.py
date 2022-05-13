@@ -5,7 +5,7 @@ from pika import BlockingConnection, ConnectionParameters
 from pika.exceptions import AMQPConnectionError
 
 from settings.configs import EXCHANGE, RABBITMQ
-from settings.patterns import RECEIVED_MESSAGE, START_CONSUMING, QUEUE_BIND, INPUT
+from settings.patterns import RECEIVED_MESSAGE, START_CONSUMING, QUEUE_BIND, INPUT, ERROR_MESSAGE
 
 
 def async_consume(ch, method, properties, body):
