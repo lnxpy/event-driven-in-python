@@ -68,7 +68,7 @@ Open `settings/configs.py` file in a text editor and make changes. The default c
 #### 5. Start producing and consuming
 
 You can change the variable `MESSAGE` from `settings/configs.py` to make your own message pattern with some additional keys. Once you made your changes, 
-create two fresh terminal tabs and run both `producer.py` and `consumer.py` each by each. Since `producet.py` declares the queue, make sure you run the producer module first. For more message fields, check out `settings/volumes.py`. Make sure you use the exact key name as your message fields.
+create two fresh terminal tabs and run both `producer.py` and `consumer.py` each by each. Since `producer.py` declares the queue, make sure you run the producer module first. For more message fields, check out `settings/volumes.py`. Make sure you use the exact key name as your message fields.
 
 ### Final Words
 This project is made with the aim of educational purposes. Feel free to contribute.
