@@ -1,6 +1,6 @@
 ## Event-Driven Architecture in Python
 
-Event-Driven Architecture implemented in Python with RabbitMQ and Docker. You have full access to the messages and service configurations. **This project is based on [Event-Driven Architecture in Python](https://blog.imsadra.me/event-driven-architecture-in-python) articles on Hashnode**.
+Event-Driven Architecture implemented in Python with RabbitMQ and Docker. You have full access to the messages and service configurations. **This project is based on [Event-Driven Architecture in Python](https://blog.imsadra.dev/event-driven-architecture-in-python) articles on Hashnode**.
 
 ### Preview
 ![preview](https://cdn.hashnode.com/res/hashnode/image/upload/v1652463979306/eav6lFh1x.gif)
